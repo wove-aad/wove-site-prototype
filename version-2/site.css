@@ -1250,3 +1250,10 @@ html[data-motion="calm"] .hov{ transition:opacity .2s linear; transform:translat
 .feed-bar .dd{ margin-left:auto }
 @media (max-width:640px){ .feed-bar .dd{ margin-left:0 } }
 @media (min-width:641px){ .feed-bar .dd .dd-list{ left:auto; right:0 } }
+/* a small picture beside a client when you point at it */
+.ct-row{ position:relative }
+.ct-row .nm{ position:static }
+.hov.sm{ width:clamp(120px, 10vw, 150px); right:clamp(48px, 5vw, 72px) }
+.big-row .ds{ position:relative }
+.big-row .hov.sm{ right:calc(100% + 28px) }
+@media (hover:hover) and (min-width:901px){ .ct-row:hover .hov, .big-row:hover .hov{ opacity:1; transform:translateY(-50%) rotate(var(--rot)) scale(1) } }
