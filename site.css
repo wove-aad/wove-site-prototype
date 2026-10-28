@@ -910,3 +910,9 @@ html[data-menu="b"] .ann, html[data-menu="c"] .ann{ top:calc(72px + env(safe-are
 html.hc-open .ann, html.hb-open .ann, html.acc-open .ann{ opacity:0; pointer-events:none }
 @media (max-width:900px){ .ann{ top:calc(88px + env(safe-area-inset-top, 0px)) } }
 @media (max-width:640px){ .ann{ left:max(16px, env(safe-area-inset-left, 0px)); right:max(16px, env(safe-area-inset-right, 0px)); width:auto } html[data-menu="b"] .ann, html[data-menu="c"] .ann{ top:calc(66px + env(safe-area-inset-top, 0px)) } }
+
+/* the prototype panel: version 1 or 2 */
+.proto .vers{ display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:4px; border-radius:100px; background:var(--cream); margin-bottom:8px }
+.proto .vers a{ justify-content:center; border-radius:100px; padding:8px 10px; font-weight:500 }
+.proto .vers a:hover{ background:var(--btn-hover) }
+.proto .vers a[aria-current="page"]{ background:var(--ink); color:var(--paper) }
