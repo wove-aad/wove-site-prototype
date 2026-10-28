@@ -1257,3 +1257,8 @@ html[data-motion="calm"] .hov{ transition:opacity .2s linear; transform:translat
 .big-row .ds{ position:relative }
 .big-row .hov.sm{ right:calc(100% + 28px) }
 @media (hover:hover) and (min-width:901px){ .ct-row:hover .hov, .big-row:hover .hov{ opacity:1; transform:translateY(-50%) rotate(var(--rot)) scale(1) } }
+/* team pages: the spotlight picture keeps its own shape on its own edge colour */
+.oc a.ph{ background:var(--greige) }
+.cblock .h-big{ margin-top:0 }
+.cards3.fixed, .cards4.fixed{ align-items:start }
+@media (max-width:900px){ .oc > .ph{ order:-1 } }
