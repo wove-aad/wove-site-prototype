@@ -101,12 +101,12 @@
     d.addEventListener('click', function (ev) { if (!dd.contains(ev.target)) close(); });
   });
 
-  /* ---------- feeds: dropdown filters, kind tabs (Wove Mind), list or grid, show more ---------- */
+  /* ---------- feeds: dropdown filters, impact area tabs (Wove Mind), list or grid, show more ---------- */
   $$('[data-feed]').forEach(function (feed) {
     var rows = $$('.list > .row', feed), cards = $$('.cards > .card', feed), initial = parseInt(feed.getAttribute('data-initial') || '999', 10), shown = initial;
-    var dds = $$('[data-dd]', feed), tabs = $$('[data-fk]', feed), kindV = 'all', more = $('[data-more]', feed), count = $('[data-count]', feed), empty = $('.feed-empty', feed);
+    var dds = $$('[data-dd]', feed), tabBox = $('[data-tabs]', feed), tabF = tabBox ? tabBox.getAttribute('data-tabs') : '', tabs = $$('[data-tv]', feed), tabV = 'all', more = $('[data-more]', feed), count = $('[data-count]', feed), empty = $('.feed-empty', feed);
     function has(el, attr, v) { if (v === 'all') return true; return (' ' + (el.getAttribute(attr) || '') + ' ').indexOf(' ' + v + ' ') > -1; }
-    function fits(el) { return (kindV === 'all' || el.getAttribute('data-kind') === kindV) && dds.every(function (x) { return has(el, 'data-' + x.getAttribute('data-f'), x.getAttribute('data-value') || 'all'); }); }
+    function fits(el) { return has(el, 'data-' + tabF, tabV) && dds.every(function (x) { return has(el, 'data-' + x.getAttribute('data-f'), x.getAttribute('data-value') || 'all'); }); }
     function apply() {
       var n = 0, vis = 0;
       rows.forEach(function (r, i) {
@@ -119,16 +119,16 @@
       if (count) count.textContent = n ? ('Showing ' + vis + ' of ' + n) : '';
       if (empty) empty.hidden = n > 0;
     }
-    function setKind(v) { kindV = v; tabs.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-fk') === v)); }); }
+    function setTab(v) { tabV = v; tabs.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-tv') === v)); }); }
     feed.addEventListener('ddchange', function () { shown = initial; apply(); });
-    tabs.forEach(function (b) { b.addEventListener('click', function () { setKind(b.getAttribute('data-fk')); shown = initial; apply(); }); });
+    tabs.forEach(function (b) { b.addEventListener('click', function () { setTab(b.getAttribute('data-tv')); shown = initial; apply(); }); });
     if (more) more.addEventListener('click', function () { shown += 10; apply(); });
     $$('[data-view]', feed).forEach(function (b) { b.addEventListener('click', function () { feed.setAttribute('data-mode', b.getAttribute('data-view')); $$('[data-view]', feed).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); }); });
-    /* presets from the link: work.html?client=circular-ie, ?team=labs, ?area=public, wove-mind.html?k=experiment */
+    /* presets from the link: work.html?client=circular-ie, ?team=labs, ?area=public, wove-mind.html?area=futures&kind=experiment */
     try {
       var q = new URLSearchParams(location.search);
       dds.forEach(function (x) { var v = q.get(x.getAttribute('data-f')); if (v && x.ddPick) x.ddPick(v); });
-      var kq = q.get('k'); if (kq && tabs.some(function (b) { return b.getAttribute('data-fk') === kq; })) setKind(kq);
+      var tq = tabF && q.get(tabF); if (tq && tabs.some(function (b) { return b.getAttribute('data-tv') === tq; })) setTab(tq);
       if (q.get('view') === 'list' || q.get('view') === 'grid') { feed.setAttribute('data-mode', q.get('view')); $$('[data-view]', feed).forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-view') === q.get('view'))); }); }
     } catch (e) {}
     apply();

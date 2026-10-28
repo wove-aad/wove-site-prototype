@@ -1148,15 +1148,6 @@ a.big-row:hover .nm{ transform:translateX(6px) }
 .team-tiles a:hover .arrow, .team-tiles a:focus-visible .arrow{ opacity:1; transform:none }
 @media (hover:none){ .team-tiles .arrow{ opacity:1; transform:none } }
 
-/* client logos: placeholder marks in even tiles, the name small underneath */
-.logos{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; padding-top:32px }
-.logos span{ padding:0; border:0; border-radius:0; font-weight:400; font-size:inherit; line-height:inherit; color:inherit }
-.logos > a, .logos > span{ display:flex; flex-direction:column; align-items:stretch; gap:10px; min-width:0 }
-.logos .lg{ display:grid; place-items:center; aspect-ratio:2/1; border-radius:6px; background:var(--cream); transition:background var(--fast) var(--ease) }
-.logos .lg svg{ width:44%; max-width:150px; height:auto; color:#C9C6BC; transition:color var(--fast) var(--ease) }
-.logos .nm{ font-size:15px; line-height:22px; color:var(--fade) }
-.logos > a:hover .lg{ background:var(--greige) } .logos > a:hover .lg svg{ color:var(--soft) } .logos > a:hover .nm{ color:var(--ink) }
-.logos .note{ grid-column:1 / -1; margin-top:4px }
 .sec .follow.left{ margin-top:28px }
 
 /* clients table: the whole row is the link */
@@ -1200,8 +1191,8 @@ a.big-row:hover .nm{ transform:translateX(6px) }
 .oc a.ph{ display:block; overflow:hidden; border-radius:6px }
 .oc a.ph img{ transition:transform var(--slow) var(--ease) } .oc a.ph:hover img{ transform:scale(1.02) }
 
-@media (max-width:1100px){ .team-tiles{ grid-template-columns:repeat(2, minmax(0,1fr)) } .logos{ grid-template-columns:repeat(3, minmax(0,1fr)) } }
-@media (max-width:640px){ .team-tiles a{ min-height:0 } .logos{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px } .mind-bar{ flex-direction:column; align-items:flex-start } }
+@media (max-width:1100px){ .team-tiles{ grid-template-columns:repeat(2, minmax(0,1fr)) } }
+@media (max-width:640px){ .team-tiles a{ min-height:0 } .mind-bar{ flex-direction:column; align-items:flex-start } }
 .row .r{ position:relative; padding-right:26px }
 .row .r .arrow{ position:absolute; right:0; top:50%; margin-top:-6px }
 .ct-row .nm{ font-size:clamp(22px, 2vw, 28px); line-height:1.25 }
@@ -1212,3 +1203,44 @@ body{ overflow-x:clip }
 @media (max-width:640px){ .team-tiles{ grid-template-columns:minmax(0,1fr) } .br-d{ display:none } }
 .nophoto .ontag{ font-size:13px; line-height:18px; color:var(--ink) }
 .ct-row.has{ position:relative } .ct-link::after{ content:""; position:absolute; inset:0 } .ct-link:focus-visible{ outline:none } .ct-link:focus-visible::after{ outline:2px solid var(--ink); outline-offset:2px; border-radius:4px }
+
+/* =====================================================================================================
+   28 October, later: square tags and tabs, pictures on hover, the timeline runs on
+   ===================================================================================================== */
+/* tags and tabs are square-cornered; buttons that do something stay round */
+.tag, .ontag{ border-radius:3px }
+.tabs .pill, .seg .pill, .filters .pill, .dd-btn, .switch a, .person-top .asks .pill{ border-radius:4px }
+.dd-list{ border-radius:6px } .dd-list li{ border-radius:3px }
+
+/* the Circular.ie timeline keeps going: an arrowhead at the end of the line */
+.tl::after{ content:""; position:absolute; right:0; top:5px; width:8px; height:8px; border-top:1px solid var(--ink); border-right:1px solid var(--ink); transform:rotate(45deg) }
+.sec-head.norule + .tl{ margin-top:36px }
+@media (max-width:900px){ .tl::after{ right:auto; left:3.5px; top:auto; bottom:8px; transform:rotate(135deg) } }
+
+/* a picture comes up in the empty space on the right when you point at a row */
+.team-rows a, .does > div{ position:relative }
+.hov{ position:absolute; right:clamp(72px, 9vw, 140px); top:50%; z-index:3; width:clamp(200px, 19vw, 270px); pointer-events:none; opacity:0;
+      transform:translateY(-44%) rotate(0deg) scale(.94); transition:opacity .28s var(--ease), transform .45s cubic-bezier(.22,1,.36,1) }
+.hov img{ display:block; width:100%; height:auto; border-radius:2px; box-shadow:0 14px 36px rgba(17,17,17,.16) }
+@media (hover:hover) and (min-width:901px){
+  .team-rows a:hover .hov, .does > div:hover .hov{ opacity:1; transform:translateY(-50%) rotate(var(--rot)) scale(1) }
+}
+@media (hover:none), (max-width:900px){ .hov{ display:none } }
+html[data-motion="calm"] .hov{ transition:opacity .2s linear; transform:translateY(-50%) }
+.team-rows .say, .team-rows .ds{ max-width:min(30em, calc(100% - 300px)) }
+.does > div{ cursor:default }
+.does .nm, .does .ds{ transition:transform var(--fast) var(--ease) }
+.does > div:hover .nm{ transform:translateX(6px) }
+.does .ds{ max-width:min(34em, 100%) }
+@media (min-width:901px){ .does > div{ grid-template-columns:minmax(0, 420px) minmax(0, 1fr) } .does .ds{ max-width:min(30em, calc(100% - 290px)) } }
+
+/* team pages: the lead and the latest on their own lines */
+.team-meta{ flex-direction:column; gap:12px }
+.does .hov{ right:0 }
+@media (min-width:901px){ .does .ds{ max-width:min(30em, calc(100% - 310px)) } .team-rows .say, .team-rows .ds{ max-width:min(30em, calc(100% - 360px)) } }
+@media (max-width:640px){
+  .mind-bar{ align-items:stretch }
+  .mind-bar .tabs{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin-left:calc(-1 * max(var(--gutter), env(safe-area-inset-left, 0px))); margin-right:calc(-1 * max(var(--gutter), env(safe-area-inset-right, 0px))); padding:0 max(var(--gutter), env(safe-area-inset-right, 0px)) 0 max(var(--gutter), env(safe-area-inset-left, 0px)) }
+  .mind-bar .tabs::-webkit-scrollbar{ display:none }
+  .mind-bar .dd{ align-self:flex-start }
+}
