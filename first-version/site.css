@@ -1,3 +1,15 @@
+/* Ballinger, from the computer viewing the site. The font files are not uploaded here: the copies we have are trial (TEST) versions.
+   Where Ballinger is not installed (or the browser blocks installed fonts, as Safari does), the page falls back to the font after it. */
+@font-face{ font-family:"Ballinger"; src:local("Ballinger Regular"), local("Ballinger-Regular"), local("Ballinger TEST Regular"), local("BallingerTEST-Regular"); font-weight:400; font-style:normal }
+@font-face{ font-family:"Ballinger"; src:local("Ballinger Italic"), local("Ballinger-Italic"), local("Ballinger TEST Italic"), local("BallingerTEST-Italic"); font-weight:400; font-style:italic }
+@font-face{ font-family:"Ballinger"; src:local("Ballinger Medium"), local("Ballinger-Medium"), local("Ballinger TEST Medium"), local("BallingerTEST-Medium"); font-weight:500; font-style:normal }
+@font-face{ font-family:"Ballinger"; src:local("Ballinger Medium Italic"), local("Ballinger-MediumItalic"), local("Ballinger TEST Medium Italic"), local("BallingerTEST-MediumItalic"); font-weight:500; font-style:italic }
+@font-face{ font-family:"Ballinger"; src:local("Ballinger Bold"), local("Ballinger-Bold"), local("Ballinger TEST Bold"), local("BallingerTEST-Bold"); font-weight:700; font-style:normal }
+@font-face{ font-family:"Ballinger"; src:local("Ballinger Bold Italic"), local("Ballinger-BoldItalic"), local("Ballinger TEST Bold Italic"), local("BallingerTEST-BoldItalic"); font-weight:700; font-style:italic }
+@font-face{ font-family:"Ballinger"; src:local("Ballinger X-Bold"), local("Ballinger-X-Bold"), local("Ballinger TEST X-Bold"), local("BallingerTEST-X-Bold"); font-weight:800; font-style:normal }
+@font-face{ font-family:"Ballinger"; src:local("Ballinger Black"), local("Ballinger-Black"), local("Ballinger TEST Black"), local("BallingerTEST-Black"); font-weight:900; font-style:normal }
+@font-face{ font-family:"Ballinger Mono"; src:local("Ballinger Mono Regular"), local("BallingerMono-Regular"), local("Ballinger Mono TEST Regular"), local("BallingerMonoTEST-Regular"); font-weight:400; font-style:normal }
+@font-face{ font-family:"Ballinger Mono"; src:local("Ballinger Mono Medium"), local("BallingerMono-Medium"), local("Ballinger Mono TEST Medium"), local("BallingerMonoTEST-Medium"); font-weight:500; font-style:normal }
 /* Wove Group prototype, pass 3.
    Layout: 1440 canvas, 72px margins, 12 columns, 24px gutters. Hairline rules and type carry the structure.
    Colour means theme: a theme's colour fills its page head, its featured block and its swatches. Pictures sit full bleed, never on a mount.
@@ -7,8 +19,8 @@
   --coral:#ED8C7C; --coral-text:#B8432F; --cream:#F3EEEB; --img:#E4DFD8;
   --rule:#111111; --rule-soft:rgba(17,17,17,.15); --gridline:rgba(17,17,17,.07);
   --t-circular:#E1F5EE; --t-public:#D5FAFF; --t-data:#E0BDFF; --t-arts:#ED8C7C; --t-education:#F3EEEB; --t-mission:#FFFFFF; --t-futures:#111111;
-  --sans:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --mono:"DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --sans:"Ballinger", "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono:"Ballinger Mono", "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --m:clamp(16px, 5vw, 72px); --gut:24px; --max:1440px;
   --ease:cubic-bezier(.2,.7,.2,1); --ease-io:cubic-bezier(.65,0,.35,1); --ease-out:cubic-bezier(.165,.84,.44,1);
   --header-h:96px; --sec:clamp(80px, 9vw, 152px);
@@ -94,7 +106,7 @@ a:hover .arrow .h, a:focus-visible .arrow .h, button:hover .arrow .h, .hov:hover
 .site-header{ position:sticky; top:env(safe-area-inset-top,0px); z-index:50; background:var(--paper); view-transition-name:site-header; transition:transform .45s var(--ease), box-shadow .3s, background-color .4s }
 .site-header.is-hidden{ transform:translateY(-100%) }
 .site-header .bar{ height:var(--header-h); display:flex; align-items:center; justify-content:space-between; gap:24px }
-.logo{ font-weight:800; font-size:28px; letter-spacing:-.035em; line-height:1; white-space:nowrap; transition:opacity .2s }
+.logo{ font-family:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif; font-weight:800; font-size:28px; letter-spacing:-.035em; line-height:1; white-space:nowrap; transition:opacity .2s }
 .logo:hover{ opacity:.75 }
 .nav{ display:flex; align-items:center; gap:28px; position:relative }
 .nav-list{ display:flex; align-items:center; gap:28px; position:relative }
@@ -375,7 +387,7 @@ html[data-pagecolour="paper"] .band-head.dark .crumb, html[data-pagecolour="pape
 /* Home hero (Grace, 28 Oct): a small title, then one plain statement of what Wove Group is, left aligned */
 .hero{ padding-block:clamp(56px, 7.5vw, 120px) clamp(48px, 5.5vw, 88px); background:var(--cream) }
 .hero .hero-t{ font-size:15px; line-height:20px; font-weight:500; animation:fade .9s var(--ease) both }
-.hero .say{ font-size:clamp(28px, 3.25vw, 47px); line-height:1.2; letter-spacing:-.022em; font-weight:500; max-width:27.2em; margin-top:clamp(20px, 2vw, 28px); text-wrap:wrap; animation:fade .9s var(--ease) .1s both }
+.hero .say{ font-size:clamp(28px, 3.25vw, 47px); line-height:1.2; letter-spacing:-.022em; font-weight:500; max-width:25.6em; margin-top:clamp(20px, 2vw, 28px); text-wrap:wrap; animation:fade .9s var(--ease) .1s both }
 .hero .acts{ display:flex; flex-wrap:wrap; align-items:center; gap:28px; margin-top:clamp(32px, 3.5vw, 48px); animation:fade .9s var(--ease) .25s both }
 @keyframes rise{ from{ transform:translateY(105%) } to{ transform:none } }
 @keyframes fade{ from{ opacity:0; transform:translateY(10px) } }
