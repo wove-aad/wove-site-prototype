@@ -1178,8 +1178,8 @@ a.big-row:hover .nm{ transform:translateX(6px) }
 .pill:focus:not(:focus-visible), .dd-btn:focus:not(:focus-visible), .tabs .pill:focus:not(:focus-visible){ outline:none; box-shadow:none }
 
 /* Wove Mind: kind tabs and the impact area filter on one line, flush left */
-.mind-bar{ display:flex; justify-content:space-between; align-items:center; gap:12px 24px; flex-wrap:wrap }
-.mind-bar .tabs{ justify-content:flex-start; margin-top:0 }
+.feed-bar{ display:flex; justify-content:space-between; align-items:center; gap:12px 24px; flex-wrap:wrap }
+.feed-bar .tabs{ justify-content:flex-start; margin-top:0 }
 
 /* spotlight: quicker in and out */
 .spot{ transition:grid-template-columns .38s cubic-bezier(.22,1,.36,1) }
@@ -1192,7 +1192,7 @@ a.big-row:hover .nm{ transform:translateX(6px) }
 .oc a.ph img{ transition:transform var(--slow) var(--ease) } .oc a.ph:hover img{ transform:scale(1.02) }
 
 @media (max-width:1100px){ .team-tiles{ grid-template-columns:repeat(2, minmax(0,1fr)) } }
-@media (max-width:640px){ .team-tiles a{ min-height:0 } .mind-bar{ flex-direction:column; align-items:flex-start } }
+@media (max-width:640px){ .team-tiles a{ min-height:0 } .feed-bar{ flex-direction:column; align-items:flex-start } }
 .row .r{ position:relative; padding-right:26px }
 .row .r .arrow{ position:absolute; right:0; top:50%; margin-top:-6px }
 .ct-row .nm{ font-size:clamp(22px, 2vw, 28px); line-height:1.25 }
@@ -1237,8 +1237,16 @@ html[data-motion="calm"] .hov{ transition:opacity .2s linear; transform:translat
 .does .hov{ right:0 }
 @media (min-width:901px){ .does .ds{ max-width:min(30em, calc(100% - 310px)) } .team-rows .say, .team-rows .ds{ max-width:min(30em, calc(100% - 360px)) } }
 @media (max-width:640px){
-  .mind-bar{ align-items:stretch }
-  .mind-bar .tabs{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin-left:calc(-1 * max(var(--gutter), env(safe-area-inset-left, 0px))); margin-right:calc(-1 * max(var(--gutter), env(safe-area-inset-right, 0px))); padding:0 max(var(--gutter), env(safe-area-inset-right, 0px)) 0 max(var(--gutter), env(safe-area-inset-left, 0px)) }
-  .mind-bar .tabs::-webkit-scrollbar{ display:none }
-  .mind-bar .dd{ align-self:flex-start }
+  .feed-bar{ align-items:stretch }
+  .feed-bar .tabs{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; margin-left:calc(-1 * max(var(--gutter), env(safe-area-inset-left, 0px))); margin-right:calc(-1 * max(var(--gutter), env(safe-area-inset-right, 0px))); padding:0 max(var(--gutter), env(safe-area-inset-right, 0px)) 0 max(var(--gutter), env(safe-area-inset-left, 0px)) }
+  .feed-bar .tabs::-webkit-scrollbar{ display:none }
+  .feed-bar .dd{ align-self:flex-start }
 }
+
+/* filters that can never come up empty: a team or kind shows how many there are, and an impact area with nothing for the chosen team is greyed out */
+.dd-list .dd-n{ color:var(--fade); font-weight:400 }
+.dd-list li[hidden]{ display:none }
+.tabs .pill[aria-disabled="true"]{ opacity:.38; cursor:default; pointer-events:none }
+.feed-bar .dd{ margin-left:auto }
+@media (max-width:640px){ .feed-bar .dd{ margin-left:0 } }
+@media (min-width:641px){ .feed-bar .dd .dd-list{ left:auto; right:0 } }
