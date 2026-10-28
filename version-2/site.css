@@ -935,8 +935,10 @@ html.hc-open .ann, html.hb-open .ann, html.acc-open .ann{ opacity:0; pointer-eve
 .sq{ display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--c); flex:none }
 
 /* tiles keep the picture's own shape */
-.card .ph{ aspect-ratio:auto!important; background:none }
-.card .ph img{ height:auto!important }
+.card .ph{ position:relative }
+.card:not(.free) .ph{ aspect-ratio:4/3 }
+.card .ph.fit{ background:var(--bg) } .card .ph.fit img{ object-fit:contain }
+.card.free .ph{ aspect-ratio:auto; background:none } .card.free .ph img{ height:auto }
 .card .kind{ margin-top:14px }
 .card .kind + .h-card{ margin-top:4px }
 .card .by{ margin-top:4px; font-size:15px; line-height:22px; color:var(--fade) }
@@ -944,7 +946,7 @@ html.hc-open .ann, html.hb-open .ann, html.acc-open .ann{ opacity:0; pointer-eve
 .cards3{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:40px 24px; margin-top:32px; align-items:start }
 .feed .cards{ align-items:start }
 .cards.one{ display:grid; grid-template-columns:minmax(0,1fr); padding-top:16px }
-.nophoto{ aspect-ratio:306/230; border:1px solid var(--rule); border-radius:2px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; background:var(--paper) }
+.nophoto{ position:relative; aspect-ratio:4/3; border:1px solid var(--rule); border-radius:2px; padding:20px; display:flex; flex-direction:column; justify-content:space-between; background:var(--paper) }
 .nophoto span{ font-size:15px; line-height:22px; color:var(--fade) }
 .nophoto p{ font-weight:500; font-size:22px; line-height:28px; letter-spacing:-.01em; text-wrap:pretty }
 .nophoto.wide{ aspect-ratio:auto; min-height:200px; gap:40px; margin-bottom:8px }
@@ -1054,7 +1056,6 @@ a.big-row:hover .nm{ transform:translateX(6px) }
 /* work: the clients table */
 .ct-row{ display:grid; grid-template-columns:minmax(0, 2fr) 140px 180px minmax(0,1fr) 24px; gap:24px; align-items:center; padding:16px 0; border-bottom:1px solid var(--rule); font-size:18px; line-height:28px }
 .ct-row .nm{ font-size:22px; line-height:30px; font-weight:500 }
-.ct-row.has .nm a:hover{ text-decoration:underline; text-underline-offset:4px }
 .ct-h{ font-size:15px; line-height:22px; color:var(--fade); padding:12px 0 }
 .ct-row .sqs{ display:flex; gap:6px }
 .key{ display:flex; gap:20px; flex-wrap:wrap; margin-top:16px; font-size:15px; line-height:22px; color:var(--fade) } .key span{ display:inline-flex; align-items:center; gap:7px }
@@ -1120,3 +1121,94 @@ a.big-row:hover .nm{ transform:translateX(6px) }
 .connect .end .kind{ display:block; color:rgba(250,249,246,.78); margin:0 }
 .row.next .num{ color:var(--fade) }
 .ann .kind{ color:var(--grey) }
+
+/* =====================================================================================================
+   Snag pass, 28 October evening: version 1 blocks back where they worked, lighter type, tidier tiles.
+   ===================================================================================================== */
+/* team tag on a project picture, top right */
+.ontags{ position:absolute; top:12px; right:12px; display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; max-width:calc(100% - 24px); z-index:1 }
+.ontag{ display:inline-flex; align-items:center; padding:3px 10px; border-radius:100px; background:var(--c, var(--paper)); font-size:13px; line-height:18px; color:var(--ink); white-space:nowrap }
+.nophoto .ontags{ top:16px; right:16px }
+
+/* team tags in project rows */
+.tag{ display:inline-flex; align-items:center; padding:2px 10px; border-radius:100px; background:var(--c, var(--cream)); font-size:14px; line-height:20px; color:var(--ink); white-space:nowrap }
+.tag.plain{ background:none; padding:0; font-size:15px; line-height:22px; color:var(--fade) }
+.row .k:has(> .tag){ flex-direction:row; flex-wrap:wrap; gap:6px }
+.row .r span{ text-align:right }
+
+/* home, what we do: four plain tiles; the tile takes the team's colour when you point at it */
+.sec.end-s{ padding-bottom:var(--sec) }
+.team-tiles{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; padding-top:32px }
+.team-tiles a{ display:flex; flex-direction:column; justify-content:space-between; gap:32px; min-height:220px; padding:24px 24px 22px; border-radius:6px; background:var(--cream); transition:background .3s var(--ease) }
+.team-tiles p{ font-size:calc(20px * var(--fs)); line-height:1.4; color:var(--grey); text-wrap:pretty }
+.team-tiles b{ font-weight:500; color:var(--ink) }
+.team-tiles .arrow{ align-self:flex-end; opacity:0; transform:translateX(-6px); transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease) }
+.team-tiles a:hover, .team-tiles a:focus-visible{ background:var(--c) }
+.team-tiles a:hover p, .team-tiles a:focus-visible p{ color:var(--ink) }
+.team-tiles a:hover .arrow, .team-tiles a:focus-visible .arrow{ opacity:1; transform:none }
+@media (hover:none){ .team-tiles .arrow{ opacity:1; transform:none } }
+
+/* client logos: placeholder marks in even tiles, the name small underneath */
+.logos{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; padding-top:32px }
+.logos span{ padding:0; border:0; border-radius:0; font-weight:400; font-size:inherit; line-height:inherit; color:inherit }
+.logos > a, .logos > span{ display:flex; flex-direction:column; align-items:stretch; gap:10px; min-width:0 }
+.logos .lg{ display:grid; place-items:center; aspect-ratio:2/1; border-radius:6px; background:var(--cream); transition:background var(--fast) var(--ease) }
+.logos .lg svg{ width:44%; max-width:150px; height:auto; color:#C9C6BC; transition:color var(--fast) var(--ease) }
+.logos .nm{ font-size:15px; line-height:22px; color:var(--fade) }
+.logos > a:hover .lg{ background:var(--greige) } .logos > a:hover .lg svg{ color:var(--soft) } .logos > a:hover .nm{ color:var(--ink) }
+.logos .note{ grid-column:1 / -1; margin-top:4px }
+.sec .follow.left{ margin-top:28px }
+
+/* clients table: the whole row is the link */
+.ct-row.has{ transition:background var(--fast) var(--ease) }
+.ct-row.has .nm .t{ display:inline-block; transition:transform var(--fast) var(--ease) }
+.ct-row.has .ar .arrow{ opacity:0; transform:translateX(-6px); transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease) }
+.ct-row.has:hover .nm .t{ transform:translateX(6px) }
+.ct-row.has:hover .ar .arrow, .ct-row.has:focus-visible .ar .arrow{ opacity:1; transform:none }
+.ct-row .nm{ font-weight:400 }
+@media (hover:none){ .ct-row.has .ar .arrow{ opacity:1; transform:none } }
+
+/* designed dropdowns */
+.feed .filters{ justify-content:flex-start; margin-top:24px }
+.dd{ position:relative; display:inline-flex }
+.dd-btn{ display:inline-flex; align-items:center; gap:10px; padding:9px 14px 9px 16px; border-radius:100px; background:var(--white); border:1px solid var(--btn-line); font-weight:500; font-size:15px; line-height:20px; color:var(--ink); cursor:pointer; transition:background var(--fast) var(--ease), border-color var(--fast) var(--ease) }
+.dd-btn:hover{ background:var(--btn) }
+.dd-btn .chev{ transition:transform var(--fast) var(--ease) }
+.dd.open .dd-btn .chev{ transform:rotate(180deg) }
+.dd.set .dd-btn{ background:var(--ink); border-color:var(--ink); color:var(--paper) }
+.dd-list{ position:absolute; left:0; top:calc(100% + 6px); z-index:30; min-width:max(100%, 220px); max-height:min(360px, 60vh); overflow:auto; padding:6px; border-radius:14px; background:var(--white); box-shadow:0 1px 0 rgba(0,0,0,.04), 0 12px 32px rgba(17,17,17,.12); opacity:0; transform:translateY(-4px); visibility:hidden; transition:opacity .18s var(--ease), transform .18s var(--ease), visibility 0s linear .18s }
+.dd.open .dd-list{ opacity:1; transform:none; visibility:visible; transition:opacity .18s var(--ease), transform .18s var(--ease) }
+.dd-list li{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:9px 12px; border-radius:8px; font-size:15px; line-height:20px; color:var(--ink); cursor:pointer; white-space:nowrap }
+.dd-list li:hover, .dd-list li:focus{ background:var(--cream); outline:none }
+.dd-list li:focus-visible{ box-shadow:inset 0 0 0 2px var(--ink) }
+.dd-list li[aria-selected="true"]{ font-weight:500 }
+.dd-list li[aria-selected="true"]::after{ content:""; width:7px; height:7px; border-radius:50%; background:var(--ink); flex:none }
+/* no outline when a filter is clicked; only when you move with the keyboard */
+.pill:focus:not(:focus-visible), .dd-btn:focus:not(:focus-visible), .tabs .pill:focus:not(:focus-visible){ outline:none; box-shadow:none }
+
+/* Wove Mind: kind tabs and the impact area filter on one line, flush left */
+.mind-bar{ display:flex; justify-content:space-between; align-items:center; gap:12px 24px; flex-wrap:wrap }
+.mind-bar .tabs{ justify-content:flex-start; margin-top:0 }
+
+/* spotlight: quicker in and out */
+.spot{ transition:grid-template-columns .38s cubic-bezier(.22,1,.36,1) }
+.spot .pic img{ transition:opacity .25s var(--ease) }
+.spot .meta{ transition:opacity .16s var(--ease) }
+.spot .meta.on{ transition-delay:0s }
+
+/* one client, start to finish: the picture is a link */
+.oc a.ph{ display:block; overflow:hidden; border-radius:6px }
+.oc a.ph img{ transition:transform var(--slow) var(--ease) } .oc a.ph:hover img{ transform:scale(1.02) }
+
+@media (max-width:1100px){ .team-tiles{ grid-template-columns:repeat(2, minmax(0,1fr)) } .logos{ grid-template-columns:repeat(3, minmax(0,1fr)) } }
+@media (max-width:640px){ .team-tiles a{ min-height:0 } .logos{ grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px } .mind-bar{ flex-direction:column; align-items:flex-start } }
+.row .r{ position:relative; padding-right:26px }
+.row .r .arrow{ position:absolute; right:0; top:50%; margin-top:-6px }
+.ct-row .nm{ font-size:clamp(22px, 2vw, 28px); line-height:1.25 }
+.feed .filters{ margin-bottom:12px }
+/* sticky fact columns: clip rather than hide the side overflow, so Safari keeps them sticky */
+body{ overflow-x:clip }
+.hero-img.pair{ aspect-ratio:1296/600 }
+@media (max-width:640px){ .team-tiles{ grid-template-columns:minmax(0,1fr) } .br-d{ display:none } }
+.nophoto .ontag{ font-size:13px; line-height:18px; color:var(--ink) }
+.ct-row.has{ position:relative } .ct-link::after{ content:""; position:absolute; inset:0 } .ct-link:focus-visible{ outline:none } .ct-link:focus-visible::after{ outline:2px solid var(--ink); outline-offset:2px; border-radius:4px }

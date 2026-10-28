@@ -70,16 +70,47 @@
   var sweep = function () { rvs.forEach(function (el) { if (!el.classList.contains('in') && el.getBoundingClientRect().top < innerHeight * 0.96) el.classList.add('in'); }); };
   addEventListener('scroll', function () { requestAnimationFrame(sweep); }, { passive: true }); addEventListener('load', sweep);
 
-  /* ---------- feeds: filters (client, team, impact area), list or tiles, show more ---------- */
+  /* ---------- designed dropdowns: a pill that opens a short list ---------- */
+  $$('[data-dd]').forEach(function (dd) {
+    var btn = $('.dd-btn', dd), list = $('.dd-list', dd), opts = $$('[role="option"]', list), lbl = $('.dd-lbl', dd);
+    function current() { return opts.filter(function (o) { return o.getAttribute('aria-selected') === 'true'; })[0] || opts[0]; }
+    function open() { dd.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); current().focus(); }
+    function close(back) { if (!dd.classList.contains('open')) return; dd.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); if (back) btn.focus(); }
+    function pick(o, quiet) {
+      opts.forEach(function (x) { x.setAttribute('aria-selected', String(x === o)); });
+      dd.setAttribute('data-value', o.getAttribute('data-v')); lbl.textContent = o.textContent;
+      dd.classList.toggle('set', o.getAttribute('data-v') !== 'all');
+      if (!quiet) { var ev; try { ev = new CustomEvent('ddchange', { bubbles: true }); } catch (e) { ev = d.createEvent('CustomEvent'); ev.initCustomEvent('ddchange', true, false, null); } dd.dispatchEvent(ev); }
+    }
+    dd.ddPick = function (v) { var o = opts.filter(function (x) { return x.getAttribute('data-v') === v; })[0]; if (o) pick(o, true); return !!o; };
+    btn.addEventListener('click', function () { if (dd.classList.contains('open')) close(); else open(); });
+    btn.addEventListener('keydown', function (ev) { if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') { ev.preventDefault(); open(); } });
+    opts.forEach(function (o, i) {
+      o.addEventListener('click', function () { pick(o); close(true); });
+      o.addEventListener('keydown', function (ev) {
+        var k = ev.key;
+        if (k === 'ArrowDown') { ev.preventDefault(); (opts[i + 1] || opts[0]).focus(); }
+        else if (k === 'ArrowUp') { ev.preventDefault(); (opts[i - 1] || opts[opts.length - 1]).focus(); }
+        else if (k === 'Home') { ev.preventDefault(); opts[0].focus(); }
+        else if (k === 'End') { ev.preventDefault(); opts[opts.length - 1].focus(); }
+        else if (k === 'Enter' || k === ' ') { ev.preventDefault(); pick(o); close(true); }
+        else if (k === 'Escape') { ev.preventDefault(); close(true); }
+        else if (k === 'Tab') { close(); }
+      });
+    });
+    d.addEventListener('click', function (ev) { if (!dd.contains(ev.target)) close(); });
+  });
+
+  /* ---------- feeds: dropdown filters, kind tabs (Wove Mind), list or grid, show more ---------- */
   $$('[data-feed]').forEach(function (feed) {
     var rows = $$('.list > .row', feed), cards = $$('.cards > .card', feed), initial = parseInt(feed.getAttribute('data-initial') || '999', 10), shown = initial;
-    var sels = $$('select[data-f]', feed), more = $('[data-more]', feed), count = $('[data-count]', feed), empty = $('.feed-empty', feed);
+    var dds = $$('[data-dd]', feed), tabs = $$('[data-fk]', feed), kindV = 'all', more = $('[data-more]', feed), count = $('[data-count]', feed), empty = $('.feed-empty', feed);
     function has(el, attr, v) { if (v === 'all') return true; return (' ' + (el.getAttribute(attr) || '') + ' ').indexOf(' ' + v + ' ') > -1; }
+    function fits(el) { return (kindV === 'all' || el.getAttribute('data-kind') === kindV) && dds.every(function (x) { return has(el, 'data-' + x.getAttribute('data-f'), x.getAttribute('data-value') || 'all'); }); }
     function apply() {
       var n = 0, vis = 0;
       rows.forEach(function (r, i) {
-        var ok = sels.every(function (s) { return has(r, 'data-' + s.getAttribute('data-f'), s.value); });
-        var show = ok && n < shown; if (ok) n++;
+        var ok = fits(r), show = ok && n < shown; if (ok) n++;
         r.classList.toggle('hidden-by-filter', !show); if (cards[i]) cards[i].hidden = !show;
         if (show) vis++;
       });
@@ -87,32 +118,21 @@
       if (more) more.hidden = vis >= n;
       if (count) count.textContent = n ? ('Showing ' + vis + ' of ' + n) : '';
       if (empty) empty.hidden = n > 0;
-      sels.forEach(function (s) { s.parentNode.classList.toggle('set', s.value !== 'all'); });
     }
-    sels.forEach(function (s) { s.addEventListener('change', function () { shown = initial; apply(); }); });
+    function setKind(v) { kindV = v; tabs.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-fk') === v)); }); }
+    feed.addEventListener('ddchange', function () { shown = initial; apply(); });
+    tabs.forEach(function (b) { b.addEventListener('click', function () { setKind(b.getAttribute('data-fk')); shown = initial; apply(); }); });
     if (more) more.addEventListener('click', function () { shown += 10; apply(); });
     $$('[data-view]', feed).forEach(function (b) { b.addEventListener('click', function () { feed.setAttribute('data-mode', b.getAttribute('data-view')); $$('[data-view]', feed).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); }); });
-    /* presets from the link: work.html?client=circular-ie, ?team=labs, ?area=public */
+    /* presets from the link: work.html?client=circular-ie, ?team=labs, ?area=public, wove-mind.html?k=experiment */
     try {
       var q = new URLSearchParams(location.search);
-      sels.forEach(function (s) { var v = q.get(s.getAttribute('data-f')); if (v && $('option[value="' + v + '"]', s)) s.value = v; });
+      dds.forEach(function (x) { var v = q.get(x.getAttribute('data-f')); if (v && x.ddPick) x.ddPick(v); });
+      var kq = q.get('k'); if (kq && tabs.some(function (b) { return b.getAttribute('data-fk') === kq; })) setKind(kq);
       if (q.get('view') === 'list' || q.get('view') === 'grid') { feed.setAttribute('data-mode', q.get('view')); $$('[data-view]', feed).forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-view') === q.get('view'))); }); }
     } catch (e) {}
     apply();
   });
-
-  /* ---------- Wove Mind: one row of tabs, by kind ---------- */
-  var tiles = $('[data-tiles]');
-  if (tiles) {
-    var tabs = $$('[data-fk]'), tcards = $$('.card', tiles), tEmpty = $('.feed-empty', tiles.parentNode);
-    var pickKind = function (v) {
-      tabs.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-fk') === v)); });
-      var n = 0; tcards.forEach(function (c) { var ok = v === 'all' || c.getAttribute('data-kind') === v; c.hidden = !ok; if (ok) n++; });
-      if (tEmpty) tEmpty.hidden = n > 0;
-    };
-    tabs.forEach(function (b) { b.addEventListener('click', function () { pickKind(b.getAttribute('data-fk')); }); });
-    try { var kq = new URLSearchParams(location.search).get('k'); if (kq && tabs.some(function (b) { return b.getAttribute('data-fk') === kq; })) pickKind(kq); } catch (e) {}
-  }
 
   /* ---------- people grid: pick a team ---------- */
   var ppl = $('[data-people]');
