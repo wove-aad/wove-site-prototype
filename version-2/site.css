@@ -1207,10 +1207,8 @@ body{ overflow-x:clip }
 /* =====================================================================================================
    28 October, later: square tags and tabs, pictures on hover, the timeline runs on
    ===================================================================================================== */
-/* tags and tabs are square-cornered; buttons that do something stay round */
+/* team tags are square-cornered; filters and buttons stay round */
 .tag, .ontag{ border-radius:3px }
-.tabs .pill, .seg .pill, .filters .pill, .dd-btn, .switch a, .person-top .asks .pill{ border-radius:4px }
-.dd-list{ border-radius:6px } .dd-list li{ border-radius:3px }
 
 /* the Circular.ie timeline keeps going: an arrowhead at the end of the line */
 .tl::after{ content:""; position:absolute; right:0; top:5px; width:8px; height:8px; border-top:1px solid var(--ink); border-right:1px solid var(--ink); transform:rotate(45deg) }
