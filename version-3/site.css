@@ -1390,3 +1390,6 @@ html[data-motion="calm"] .hov{ transition:opacity .2s linear; transform:translat
 main > .band:last-child{ margin-bottom:var(--sec-end) }
 .story-body{ padding-bottom:0 }
 .hero + .intro-col{ padding-top:clamp(16px, 2vw, 32px) }
+
+/* Timeline dots get a thin stroke, so they hold on a coloured block */
+.tl li i{ box-shadow:0 0 0 1px var(--ink) }
