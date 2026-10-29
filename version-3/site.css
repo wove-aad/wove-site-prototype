@@ -1372,3 +1372,21 @@ html[data-motion="calm"] .hov{ transition:opacity .2s linear; transform:translat
 .dd-list .dd-go:hover{ color:var(--ink); text-decoration:underline; text-underline-offset:3px }
 .dd-list li[data-miss]{ display:none }
 .dd-foot{ margin-top:6px; padding:10px 12px 6px; border-top:1px solid var(--rule); font-size:14px; line-height:20px; color:var(--fade) }
+
+/* Theme tiles, as in the team's home page design */
+.theme-tiles{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px; padding-top:32px }
+.theme-tiles a{ position:relative; display:flex; flex-direction:column; gap:8px; min-height:190px; padding:26px 24px 56px; border-radius:6px; background:var(--cream); transition:background .3s var(--ease) }
+.theme-tiles a:hover, .theme-tiles a:focus-visible{ background:var(--c) }
+.theme-tiles .nm{ font-size:calc(21px * var(--fs)); line-height:1.35; color:var(--ink) }
+.theme-tiles .ds{ font-size:calc(17px * var(--fs)); line-height:1.45; color:var(--grey); max-width:24em; text-wrap:pretty }
+.theme-tiles .arrow{ position:absolute; right:24px; bottom:24px; transition:transform var(--fast) var(--ease) }
+.theme-tiles a:hover .arrow{ transform:translateX(4px) }
+@media (max-width:900px){ .theme-tiles{ grid-template-columns:repeat(2, minmax(0,1fr)) } }
+@media (max-width:640px){ .theme-tiles{ grid-template-columns:minmax(0,1fr) } .theme-tiles a{ min-height:0 } }
+
+/* Spacing: a band after an open section gets the usual section space; no band runs straight into the footer;
+   the story layout (About, client and project pages) ends with the normal gap, not a double one */
+.sec:not(.end) + .band{ margin-top:var(--sec) }
+main > .band:last-child{ margin-bottom:var(--sec-end) }
+.story-body{ padding-bottom:0 }
+.hero + .intro-col{ padding-top:clamp(16px, 2vw, 32px) }
