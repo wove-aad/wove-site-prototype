@@ -124,12 +124,14 @@
      and is left out when there are none, and an impact area with nothing for the chosen team or kind is greyed out. ---------- */
   $$('[data-feed]').forEach(function (feed) {
     var rows = $$('.list > .row', feed), cards = $$('.cards > .card', feed), initial = parseInt(feed.getAttribute('data-initial') || '999', 10), shown = initial;
-    var dds = $$('[data-dd]', feed), tabBox = $('[data-tabs]', feed), tabF = tabBox ? tabBox.getAttribute('data-tabs') : '', tabs = $$('[data-tv]', feed), tabV = 'all';
-    var noun = feed.getAttribute('data-noun') || '', more = $('[data-more]', feed), count = $('[data-count]', feed), empty = $('.feed-empty', feed);
+    var dds = $$('[data-dd]', feed), groups = $$('[data-tabs]', feed);
+    var noun = feed.getAttribute('data-noun') || '', more = $('[data-more]', feed), count = $('[data-count]', feed), empty = $('.feed-empty', feed), active = $('[data-active]', feed);
+    /* Chip rows are multi-select and combine with AND: a project has to have every chip you pick. 'Everything' clears the row. */
+    var picked = {}; groups.forEach(function (g) { picked[g.getAttribute('data-tabs')] = []; });
     function has(el, attr, v) { if (!attr || v === 'all') return true; return (' ' + (el.getAttribute(attr) || '') + ' ').indexOf(' ' + v + ' ') > -1; }
-    function state() { var st = {}; if (tabF) st[tabF] = tabV; dds.forEach(function (x) { st[x.getAttribute('data-f')] = x.getAttribute('data-value') || 'all'; }); return st; }
-    function fits(el, st) { for (var k in st) { if (!has(el, 'data-' + k, st[k])) return false; } return true; }
-    function howMany(key, v) { var st = state(); st[key] = v; return rows.filter(function (r) { return fits(r, st); }).length; }
+    function state() { var st = {}; for (var k in picked) st[k] = picked[k].slice(); dds.forEach(function (x) { var v = x.getAttribute('data-value') || 'all'; st[x.getAttribute('data-f')] = v === 'all' ? [] : [v]; }); return st; }
+    function fits(el, st) { for (var k in st) { for (var i = 0; i < st[k].length; i++) if (!has(el, 'data-' + k, st[k][i])) return false; } return true; }
+    function howMany(key, v, add) { var st = state(); st[key] = add ? st[key].concat([v]) : [v]; return rows.filter(function (r) { return fits(r, st); }).length; }
     function counts() {
       dds.forEach(function (x) {
         var key = x.getAttribute('data-f');
@@ -141,15 +143,29 @@
         });
         if (x.getAttribute('data-value') !== 'all' && howMany(key, x.getAttribute('data-value')) === 0 && x.ddPick) x.ddPick('all');
       });
-      tabs.forEach(function (b) {
-        var v = b.getAttribute('data-tv'); if (v === 'all') return;
-        var none = howMany(tabF, v) === 0;
-        if (none) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
-        b.tabIndex = none ? -1 : 0;
+      groups.forEach(function (g) {
+        var key = g.getAttribute('data-tabs');
+        $$('[data-tv]', g).forEach(function (b) {
+          var v = b.getAttribute('data-tv'); if (v === 'all') { b.setAttribute('aria-pressed', String(!picked[key].length)); return; }
+          var on = picked[key].indexOf(v) > -1, none = !on && howMany(key, v, true) === 0;
+          b.setAttribute('aria-pressed', String(on));
+          if (none) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled');
+          b.tabIndex = none ? -1 : 0;
+        });
       });
     }
+    function showActive() {
+      if (!active) return;
+      var dd = $('[data-dd][data-f="client"]', feed), v = dd && dd.getAttribute('data-value');
+      if (!v || v === 'all') { active.hidden = true; return; }
+      var o = $('[data-v="' + v + '"]', dd), nm = $('.dd-t', o).textContent, go = $('.dd-go', o);
+      active.innerHTML = 'Showing work for <b></b>' + (go ? ' · <a></a>' : '');
+      $('b', active).textContent = nm;
+      if (go) { var a = $('a', active); a.href = go.getAttribute('href'); a.textContent = 'See ' + nm + '’s full page →'; }
+      active.hidden = false;
+    }
     function apply() {
-      counts();
+      counts(); showActive();
       var st = state(), n = 0, vis = 0;
       rows.forEach(function (r, i) {
         var ok = fits(r, st), show = ok && n < shown; if (ok) n++;
@@ -161,15 +177,22 @@
       if (count) count.textContent = n ? ('Showing ' + vis + ' of ' + n) : '';
       if (empty) empty.hidden = n > 0;
     }
-    function setTab(v) { tabV = v; tabs.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-tv') === v)); }); }
     feed.addEventListener('ddchange', function () { shown = initial; apply(); });
-    tabs.forEach(function (b) { b.addEventListener('click', function () { if (b.getAttribute('aria-disabled') === 'true') return; setTab(b.getAttribute('data-tv')); shown = initial; apply(); }); });
-    if (more) more.addEventListener('click', function () { shown += 10; apply(); });
+    groups.forEach(function (g) {
+      var key = g.getAttribute('data-tabs');
+      $$('[data-tv]', g).forEach(function (b) { b.addEventListener('click', function () {
+        if (b.getAttribute('aria-disabled') === 'true') return;
+        var v = b.getAttribute('data-tv'), i = picked[key].indexOf(v);
+        if (v === 'all') picked[key] = []; else if (i > -1) picked[key].splice(i, 1); else picked[key].push(v);
+        shown = initial; apply();
+      }); });
+    });
+    if (more) more.addEventListener('click', function () { shown += 12; apply(); });
     $$('[data-view]', feed).forEach(function (b) { b.addEventListener('click', function () { feed.setAttribute('data-mode', b.getAttribute('data-view')); $$('[data-view]', feed).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); }); });
-    /* presets from the link: work.html?area=public&team=labs, wove-mind.html?area=futures&kind=experiment */
+    /* presets from the link: work.html?area=public&team=labs&client=circular-ie, wove-mind.html?kind=experiment */
     try {
       var q = new URLSearchParams(location.search);
-      var tq = tabF && q.get(tabF); if (tq && tabs.some(function (b) { return b.getAttribute('data-tv') === tq; })) setTab(tq);
+      groups.forEach(function (g) { var key = g.getAttribute('data-tabs'), v = q.get(key); if (v && $('[data-tv="' + v + '"]', g)) picked[key] = [v]; });
       dds.forEach(function (x) { var v = q.get(x.getAttribute('data-f')); if (v && x.ddPick) x.ddPick(v); });
       if (q.get('view') === 'list' || q.get('view') === 'grid') { feed.setAttribute('data-mode', q.get('view')); $$('[data-view]', feed).forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-view') === q.get('view'))); }); }
     } catch (e) {}
