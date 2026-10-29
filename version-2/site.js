@@ -160,6 +160,20 @@
     apply();
   });
 
+  /* ---------- a thread of moments (Circular.ie): a row opens in place, its small picture grows into the full one ---------- */
+  var mos = $$('[data-mo]');
+  function setMo(mo, open) { mo.classList.toggle('open', open); var b = $('.mo-tg', mo); if (b) b.setAttribute('aria-expanded', String(open)); }
+  mos.forEach(function (mo) {
+    var b = $('.mo-tg', mo); if (!b) return;
+    b.addEventListener('click', function () {
+      var open = !mo.classList.contains('open'), go = function () { setMo(mo, open); };
+      var calm = html.getAttribute('data-motion') === 'calm' || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (d.startViewTransition && !calm) d.startViewTransition(go); else go();
+    });
+  });
+  function moFromHash() { if (!location.hash) return; var hm = d.getElementById(location.hash.slice(1)); if (hm && hm.hasAttribute('data-mo')) setMo(hm, true); }
+  if (mos.length) { moFromHash(); addEventListener('hashchange', moFromHash); }
+
   /* ---------- people grid: pick a team ---------- */
   var ppl = $('[data-people]');
   if (ppl) {
