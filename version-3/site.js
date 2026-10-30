@@ -199,6 +199,9 @@
     apply();
   });
 
+
+  /* impact area intro: Read more opens the longer intro in place */
+  $$('.ia-more-btn').forEach(function (b) { var m = d.getElementById(b.getAttribute('aria-controls')); b.addEventListener('click', function () { var o = b.getAttribute('aria-expanded') !== 'true'; b.setAttribute('aria-expanded', String(o)); m.classList.toggle('open', o); $('.lbl', b).textContent = o ? 'Read less' : 'Read more'; }); });
   /* ---------- a thread of moments (Circular.ie): a row opens in place, its small picture grows into the full one ---------- */
   var mos = $$('[data-mo]');
   function setMo(mo, open) { mo.classList.toggle('open', open); var b = $('.mo-tg', mo); if (b) b.setAttribute('aria-expanded', String(open)); }
