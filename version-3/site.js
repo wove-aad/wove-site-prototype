@@ -108,35 +108,65 @@
     d.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && proto.classList.contains('open')) { proto.classList.remove('open'); pb.setAttribute('aria-expanded', 'false'); pb.focus(); } });
   }
 
-  /* ---------- dropdown filters (Work) ---------- */
-  var dds = $$('.dd');
-  function closeDds(except) { dds.forEach(function (x) { if (x !== except) { x.classList.remove('open'); $('button', x).setAttribute('aria-expanded', 'false'); } }); }
+  /* ---------- filters (Work and Wove Mind): pick several, see them underneath, take them away ---------- */
+  var fbar = $('[data-filters]'), chosen = $('[data-chosen]'), dds = $$('.dd'), topics = $('[data-topics]');
+  var X = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6"/></svg>';
+  function closeDds(except) { dds.forEach(function (x) { if (x !== except) { x.classList.remove('open'); $('.pill', x).setAttribute('aria-expanded', 'false'); } }); }
+  function picks() {
+    var out = [];
+    if (topics) $$('.pill[aria-pressed="true"]', topics).forEach(function (b) { out.push({ key: 'topic', v: b.getAttribute('data-topic'), label: b.getAttribute('data-label'), el: b }); });
+    dds.forEach(function (dd) { $$('[aria-selected="true"]', dd).forEach(function (b) { out.push({ key: dd.getAttribute('data-filter'), v: b.getAttribute('data-v'), label: b.textContent, el: b }); }); });
+    return out;
+  }
+  function pillLabel(dd) {
+    var btn = $('.pill', dd), on = $$('[aria-selected="true"]', dd);
+    $('.lbl', btn).textContent = on.length === 0 ? btn.getAttribute('data-any') : on.length === 1 ? on[0].textContent : btn.getAttribute('data-name') + ' · ' + on.length;
+    btn.classList.toggle('on', on.length > 0);
+  }
+  var countEl = $('[data-work-count]') || $('[data-mind-count]'), countText = countEl ? countEl.textContent : '';
+  function applyFilters() {
+    var ps = picks(), want = {};
+    ps.forEach(function (p) { (want[p.key] = want[p.key] || []).push(p.v); });
+    var keys = Object.keys(want), n = 0, tiles = $$('[data-filtered] .ptile');
+    tiles.forEach(function (t) {
+      var ok = keys.every(function (k) { var have = (t.getAttribute('data-' + k) || '').split(' '); return want[k].some(function (v) { return have.indexOf(v) >= 0; }); });
+      t.hidden = !ok; if (ok) n++;
+    });
+    var none = $('[data-none]'); if (none) none.hidden = n > 0;
+    if (countEl) countEl.textContent = !ps.length ? countText : countEl.hasAttribute('data-mind-count') ? 'Showing ' + n : n + (n === 1 ? ' project' : ' projects');
+    if (chosen) {
+      chosen.hidden = !ps.length;
+      chosen.innerHTML = ps.length ? ps.map(function (p, i) { return '<button type="button" data-i="' + i + '" aria-label="Remove ' + p.label.replace(/"/g, '&quot;') + '"><span class="u">' + p.label + '</span>' + X + '</button>'; }).join('') + '<button type="button" class="clear" data-clear>Clear all</button>' : '';
+      chosen._picks = ps;
+    }
+  }
   dds.forEach(function (dd) {
-    var btn = $('.pill', dd), list = $('ul', dd), key = dd.getAttribute('data-filter'), label = btn.getAttribute('data-any');
-    btn.addEventListener('click', function () { var o = !dd.classList.contains('open'); closeDds(dd); dd.classList.toggle('open', o); btn.setAttribute('aria-expanded', String(o)); if (o) { var s = $('[aria-selected="true"]', list) || $('button', list); s && s.focus(); } });
+    var btn = $('.pill', dd), list = $('ul', dd);
+    btn.addEventListener('click', function () { var o = !dd.classList.contains('open'); closeDds(dd); dd.classList.toggle('open', o); btn.setAttribute('aria-expanded', String(o)); if (o) { var s = $('button', list); s && s.focus(); } });
     list.addEventListener('click', function (ev) {
       var b = ev.target.closest('button'); if (!b) return;
-      $$('button', list).forEach(function (x) { x.setAttribute('aria-selected', String(x === b)); });
-      var v = b.getAttribute('data-v'); $('.lbl', btn).textContent = v ? b.textContent : label; btn.classList.toggle('on', !!v);
-      dd.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); btn.focus(); filterWork(); if (window.applyMind) window.applyMind();
+      b.setAttribute('aria-selected', String(b.getAttribute('aria-selected') !== 'true'));
+      pillLabel(dd); applyFilters();
     });
     list.addEventListener('keydown', function (ev) {
       var bs = $$('button', list), i = bs.indexOf(d.activeElement);
       if (ev.key === 'ArrowDown') { ev.preventDefault(); bs[(i + 1) % bs.length].focus(); }
       if (ev.key === 'ArrowUp') { ev.preventDefault(); bs[(i - 1 + bs.length) % bs.length].focus(); }
+      if (ev.key === 'Escape') { ev.preventDefault(); closeDds(); btn.focus(); }
     });
+    dd.addEventListener('focusout', function (ev) { if (ev.relatedTarget && !dd.contains(ev.relatedTarget)) { dd.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); } });
   });
   if (dds.length) { d.addEventListener('click', function (ev) { if (!ev.target.closest('.dd')) closeDds(); }); d.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closeDds(); }); }
-  function filterWork() {
-    var grid = $('[data-work]'); if (!grid) return;
-    var want = {}; dds.forEach(function (dd) { var s = $('[aria-selected="true"]', dd); var v = s && s.getAttribute('data-v'); if (v) want[dd.getAttribute('data-filter')] = v; });
-    var n = 0;
-    $$('.ptile', grid).forEach(function (t) {
-      var ok = Object.keys(want).every(function (k) { return (t.getAttribute('data-' + k) || '').split(' ').indexOf(want[k]) >= 0; });
-      t.hidden = !ok; if (ok) n++;
-    });
-    var c = $('[data-work-count]'); if (c) c.textContent = n + (n === 1 ? ' project' : ' projects');
-  }
+  if (topics) topics.addEventListener('click', function (ev) { var b = ev.target.closest('.pill[data-topic]'); if (!b) return; b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); applyFilters(); });
+  if (chosen) chosen.addEventListener('click', function (ev) {
+    var b = ev.target.closest('button'); if (!b) return;
+    var ps = chosen._picks || [];
+    if (b.hasAttribute('data-clear')) ps.forEach(function (p) { p.el.setAttribute(p.key === 'topic' ? 'aria-pressed' : 'aria-selected', 'false'); });
+    else { var p = ps[+b.getAttribute('data-i')]; if (p) p.el.setAttribute(p.key === 'topic' ? 'aria-pressed' : 'aria-selected', 'false'); }
+    dds.forEach(pillLabel); applyFilters();
+    var next = $('button', chosen); (next || $('.pill', fbar) || d.body).focus();
+  });
+  if (fbar) applyFilters();
 
   /* ---------- people: faces or names ---------- */
   var pv = $('[data-people-view]');
@@ -161,20 +191,6 @@
       });
     });
   });
-  /* ---------- Wove Mind: topic pills and kind filter ---------- */
-  var topics = $('[data-topics]');
-  if (topics) {
-    var applyMind = function () {
-      var on = $('[aria-pressed="true"]', topics), topic = on ? on.getAttribute('data-topic') : 'all';
-      var kindDd = $('.dd[data-filter="kind"] [aria-selected="true"]'), kind = kindDd ? kindDd.getAttribute('data-v') : null;
-      var n = 0;
-      $$('.ptile[data-topic]').forEach(function (t) { var ok = (topic === 'all' || (t.getAttribute('data-topic') || '').split(' ').indexOf(topic) >= 0) && (!kind || t.getAttribute('data-kind') === kind); t.hidden = !ok; if (ok) n++; });
-      var c = $('[data-mind-count]'); if (c) c.textContent = 'Showing ' + n + ' of 30';
-    };
-    topics.addEventListener('click', function (ev) { var b = ev.target.closest('.pill[data-topic]'); if (!b) return; $$('.pill[data-topic]', topics).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); applyMind(); });
-    window.applyMind = applyMind;
-  }
-
   /* ---------- small actions ---------- */
   d.addEventListener('click', function (ev) {
     var c = ev.target.closest('[data-copy]');

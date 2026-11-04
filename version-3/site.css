@@ -138,6 +138,7 @@ html.menu-open .menu, html.acc-open .acc{ opacity:1; transform:none; pointer-eve
 .btn.paper{ background:var(--paper) } .btn.paper:hover{ background:var(--white) }
 .btn.b16{ font-size:1rem; line-height:1.375 }
 .tag{ display:inline-flex; padding:4px 10px; border-radius:5px; background:var(--paper); font-size:.8125rem; line-height:1.3846; font-weight:500; color:var(--ink); white-space:nowrap }
+.tag.edge{ background:var(--white); box-shadow:inset 0 0 0 1px var(--rule) }
 .ttag{ display:inline-flex; padding:2px 10px; border-radius:3px; background:var(--c, var(--paper)); font-size:.875rem; line-height:1.4286; font-weight:400; white-space:nowrap }
 .tpill{ display:inline-flex; padding:3px 10px; border-radius:5px; background:var(--paper); font-size:.875rem; line-height:1.4286; font-weight:500; color:var(--grey); white-space:nowrap; transition:background var(--fast) var(--ease), color var(--fast) var(--ease) }
 .tpill.on, .tpill[aria-current]{ background:var(--c, var(--labs)); color:var(--ink) }
@@ -209,13 +210,11 @@ a.card:hover{ background:rgba(250,249,246,.95) }
 .tile.area .tile-block img{ height:250px; margin-top:auto }
 .tile.area .tile-block .tlink{ margin-top:0 }
 .tile.area.nophoto .tile-block .tlink{ margin-top:auto }
-.tile:hover .tile-block h3{ text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:5px }
 /* impact tile */
 .itile{ display:flex; flex-direction:column; gap:14px; padding:24px; border-radius:12px; background:var(--c, var(--tile)); min-height:220px; color:var(--ink); transition:transform var(--fast) var(--ease) }
 .itile h3{ font-size:1.375rem; line-height:1.2727; font-weight:500 }
 .itile p{ font-size:1.0625rem; line-height:calc(1.4706 * var(--lh)); color:var(--grey) }
 .itile .arrow{ margin-top:auto }
-.itile:hover h3{ text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:5px }
 /* project tile */
 .ptile{ display:flex; flex-direction:column; color:var(--ink); min-width:0; max-width:100%; flex:0 1 auto }
 .ptile-img{ position:relative; border-radius:2px; overflow:hidden; background:var(--tile); display:flex; justify-content:flex-end; align-items:flex-start; padding:14px; gap:6px; transition:box-shadow var(--fast) var(--ease) }
@@ -233,18 +232,18 @@ a.card:hover{ background:rgba(250,249,246,.95) }
 /* ---------- work rows / list rows ---------- */
 .rows{ display:flex; flex-direction:column }
 .wrow{ display:flex; align-items:flex-start; padding:22px 0; border-bottom:1px solid var(--rule); position:relative }
-.wrow:first-child{ border-top:1px solid var(--rule) }
-.rows.toprule{ border-top:1px solid var(--rule) } .rows.toprule .wrow:first-child{ border-top:0 }
 .wrow-tags{ width:224px; flex:none; display:flex; gap:6px; padding-top:5px; align-items:center; font-size:.9375rem; color:var(--muted) }
 .wrow-tags .alltext{ padding-top:4px; line-height:1.4667 }
-.wrow h3{ flex:1 1 0; min-width:0; font-size:1.75rem; line-height:1.2143; font-weight:500; letter-spacing:-.01em; transition:transform var(--fast) var(--ease) }
+.wrow h3{ flex:1 1 0; min-width:0; font-size:1.75rem; line-height:1.2143; font-weight:500; letter-spacing:-.01em }
+.wrow h3 .t{ display:inline-block; transition:transform var(--fast) var(--ease) }
 .wrow h3 a::before{ content:""; position:absolute; inset:0 }
 .wrow-meta{ width:232px; flex:none; text-align:right; padding-top:6px; font-size:.9375rem; line-height:1.4667; color:var(--grey); display:flex; justify-content:flex-end; align-items:center; gap:14px }
 .wrow-meta .arrow{ opacity:0; transform:translateX(-4px) }
-.wrow:hover h3{ transform:translateX(6px) }
+.wrow:hover h3 .t{ transform:translateX(6px) }
 .wrow:hover .arrow{ opacity:1; transform:none }
 .wrow .who{ width:208px; flex:none; text-align:right; font-size:.8125rem; line-height:1.2308; font-weight:700; padding-top:9px }
 /* Wove Mind rows on home: topic pill left, title, byline right */
+.rows.mrows .wrow{ border-bottom:0; border-top:1px solid var(--rule) }
 .mrow{ gap:24px; align-items:center }
 .mrow .wrow-tags{ width:200px; padding-top:0 }
 .mrow h3{ width:840px; flex:0 1 840px }
@@ -314,25 +313,24 @@ a.card:hover{ background:rgba(250,249,246,.95) }
 .pn small{ display:block; font-size:.9375rem; line-height:1.4667; color:var(--muted) }
 .pn b{ display:block; font-size:1.125rem; line-height:1.5556; font-weight:500 }
 .pn a:hover .sw{ transform:scale(1.06) }
-.pn a:hover b{ text-decoration:underline; text-underline-offset:4px }
 
 /* ---------- woven together ---------- */
 .woven{ background:var(--cream); padding:96px var(--gutter) 0; height:789px }
 .woven-in{ width:min(var(--wrap), 100%); margin-inline:auto; position:relative; height:100% }
 .woven .fan{ position:absolute; left:0; top:108px; width:624px; height:520px }
-.woven .fan img{ position:absolute; width:260px; height:340px; object-fit:cover; box-shadow:0 20px 40px -24px rgba(17,17,17,.45); transition:transform var(--slow) var(--ease) }
+.woven .fan img, .fanbox img{ position:absolute; width:260px; height:340px; object-fit:cover; box-shadow:0 20px 40px -24px rgba(17,17,17,.45); transition:transform .45s var(--ease), box-shadow .45s var(--ease) }
 .woven .fan img:nth-child(1){ left:62px; top:33px; z-index:1 } .woven .fan img:nth-child(2){ left:191px; top:0; z-index:2 } .woven .fan img:nth-child(3){ left:305px; top:48px; z-index:3 }
-.woven .fan:hover img:nth-child(1){ transform:translate(-18px,4px) rotate(-2deg) } .woven .fan:hover img:nth-child(3){ transform:translate(18px,-4px) rotate(2deg) }
+.woven .fan:hover img:nth-child(1), .fanbox:hover img:nth-child(1){ transform:translate(-18px,4px) rotate(-2deg) } .woven .fan:hover img:nth-child(3), .fanbox:hover img:nth-child(3){ transform:translate(18px,-4px) rotate(2deg) }
+.woven .fan img:hover, .fanbox img:hover{ z-index:9!important; transform:translateY(-8px) scale(1.04)!important; box-shadow:0 28px 50px -24px rgba(17,17,17,.5) }
 .woven .text{ position:absolute; left:696px; top:86px; width:600px }
 .woven .text > p{ font-size:1.61875rem; line-height:1.3822; font-weight:500; letter-spacing:-.02em; max-width:603px }
 .woven ul{ margin-top:41px }
-.woven li{ position:relative; height:93px; border-bottom:1px solid var(--rule); display:flex; align-items:flex-start; padding-top:0 }
-.woven li:last-child{ border-bottom:0 }
+.woven li{ position:relative; display:flex; align-items:flex-start; padding-bottom:18px; margin-bottom:18px; border-bottom:1px solid var(--rule) }
+.woven li:last-child{ border-bottom:0; padding-bottom:0; margin-bottom:0 }
 .woven li a{ display:flex; width:100%; padding-right:34px; position:relative }
 .woven li b{ width:144px; flex:none; font-size:1.125rem; line-height:1.5556; font-weight:700 }
 .woven li span{ width:415px; font-size:1.25rem; line-height:calc(1.4 * var(--lh)) }
 .woven li .arrow{ position:absolute; right:0; top:7px }
-.woven li a:hover span{ text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px }
 
 /* ---------- how a project runs ---------- */
 .runs{ padding:120px var(--gutter) 0 }
@@ -348,7 +346,7 @@ a.card:hover{ background:rgba(250,249,246,.95) }
 
 /* ---------- ways to work ---------- */
 .ways{ display:flex; gap:24px } .ways > *{ flex:1 1 0; min-width:0 }
-.way .tile-block{ background:var(--cream); gap:20px }
+.way .tile-block{ background:var(--cream); gap:20px; padding-bottom:28px }
 .way .tile-block p{ font-size:1.0625rem; line-height:calc(1.4706 * var(--lh)); color:var(--grey) }
 .way .tile-block img{ height:260px }
 
@@ -374,11 +372,11 @@ a.card:hover{ background:rgba(250,249,246,.95) }
 .pcard .wo{ font-size:1rem; line-height:calc(1.5 * var(--lh)); color:var(--muted); padding-top:12px }
 .pcard.small img{ height:299px } .pcard.small h3{ font-size:1.25rem; line-height:1.4; padding-top:10px } .pcard.small .role{ font-size:.9375rem; line-height:1.4667 }
 .pcard:hover img{ transform:scale(1.03) }
-.pcard:hover h3{ text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1.5px }
 .ph-row{ display:flex; justify-content:space-between; align-items:center }
 .ph-row .count{ font-size:1.25rem; line-height:1.4; color:var(--grey) }
 .view{ display:flex; gap:4px } .view button{ min-height:36px; padding:7px 13px; border-radius:17px; border:1px solid var(--line); background:var(--white); font-size:.875rem; line-height:1.4286; font-weight:500 } .view button[aria-pressed="true"]{ background:var(--ink); border-color:var(--ink); color:var(--paper) }
 .names-list .wrow h3{ font-size:1.375rem }
+.wrow .tag{ position:relative; z-index:1; pointer-events:none }
 /* person header */
 .person{ display:flex; gap:96px; padding:96px 0 105px; align-items:flex-start }
 .person > img{ width:520px; height:620px; object-fit:cover; border-radius:2px; flex:none }
@@ -431,14 +429,27 @@ a.card:hover{ background:rgba(250,249,246,.95) }
 .showmore{ display:flex; align-items:center; gap:20px; padding-top:48px; font-size:.9375rem; line-height:1.4667; color:var(--grey) }
 .showmore .btn{ font-size:1rem; line-height:1.375; padding:11px 20px; border-radius:100px }
 /* filters */
-.filters{ display:flex; align-items:center; gap:12px; flex-wrap:wrap }
+.filters{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-left:-18px }
+.chosen{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 24px; margin-top:20px; font-size:.9375rem; line-height:1.4667 }
+.chosen[hidden]{ display:none }
+.chosen button{ display:inline-flex; align-items:center; gap:6px; font-weight:500 }
+.chosen button .u{ text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px }
+.chosen button svg{ width:10px; height:10px } .chosen button svg path{ stroke:currentColor; stroke-width:1.6; stroke-linecap:round }
+.chosen button:hover svg{ transform:rotate(90deg) } .chosen button svg{ transition:transform var(--fast) var(--ease) }
+.chosen .clear{ color:var(--grey); font-weight:400 } .chosen .clear:hover{ color:var(--ink) }
+.none{ font-size:1.25rem; line-height:1.4; color:var(--grey); padding:24px 0 }
+.grid3{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:40px 24px; align-items:start }
+.grid3 .ptile{ width:auto!important }
+.grid3 .ptile .ptile-img{ aspect-ratio:416/236!important }
 .filters .count{ margin-left:auto; font-size:.9375rem; line-height:1.4667; color:var(--grey) }
 .dd{ position:relative }
 .dd .pill .chev{ width:10px; height:10px; margin-left:2px } .dd .pill .chev path{ stroke:currentColor; stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round }
-.dd ul{ position:absolute; left:0; top:calc(100% + 6px); z-index:50; width:360px; background:var(--white); border:1px solid var(--rule); box-shadow:0 20px 40px -20px rgba(17,17,17,.3); display:none; max-height:60vh; overflow:auto }
+.dd ul{ position:absolute; left:0; top:calc(100% + 6px); z-index:50; width:360px; padding:4px 0; background:var(--white); border:1px solid var(--rule); box-shadow:0 20px 40px -20px rgba(17,17,17,.3); display:none; max-height:60vh; overflow:auto }
 .dd.open ul{ display:block }
-.dd li button{ width:100%; text-align:left; padding:9px 12px; font-size:1rem; line-height:1.25 } .dd li button:hover{ background:var(--cream) }
-.dd li button[aria-selected="true"]{ background:var(--cream); font-weight:500 }
+.dd li button{ width:100%; text-align:left; padding:9px 12px 9px 36px; font-size:1rem; line-height:1.25; position:relative } .dd li button:hover{ background:var(--cream) }
+.dd li button[aria-checked="true"]{ font-weight:500 }
+.dd li button::before{ content:""; position:absolute; left:12px; top:50%; width:14px; height:14px; margin-top:-7px; border:1px solid var(--edge); border-radius:3px; background:var(--white) }
+.dd li button[aria-checked="true"]::before{ background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 7.2l2.3 2.3 4.7-5' fill='none' stroke='%23FAF9F6' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat; border-color:var(--ink) }
 
 /* ---------- footer ---------- */
 footer.site{ background:var(--tile); padding:0 var(--gutter) }
@@ -466,11 +477,7 @@ footer.site{ background:var(--tile); padding:0 var(--gutter) }
 .peek .pf{ width:220px; aspect-ratio:4/3; overflow:hidden; background:var(--tile); opacity:0; transform:scale(.9) rotate(var(--r,0deg)); transition:opacity .25s var(--ease), transform .5s var(--ease); box-shadow:0 24px 40px -24px rgba(17,17,17,.5) }
 .peek.on .pf{ opacity:1; transform:scale(1) rotate(var(--r,0deg)) }
 .peek img{ width:100%; height:100%; object-fit:cover }
-.rows.peeks:hover .wrow:not(:hover) h3{ opacity:.45 } .rows.peeks .wrow h3{ transition:opacity .3s var(--ease), transform var(--fast) var(--ease) }
 
-/* ---------- focus group: siblings step back when you point at one ---------- */
-.fg > *{ transition:opacity .4s var(--ease) }
-@media (hover:hover){ .fg:hover > :not(:hover){ opacity:.55 } }
 
 /* ---------- reveal on scroll ---------- */
 [data-rv]{ opacity:0; transform:translateY(12px); transition:opacity .7s var(--ease), transform .7s var(--ease) }
@@ -519,6 +526,7 @@ html[data-colour="cb"] [data-hue="futures"]{ --pat:radial-gradient(rgba(17,17,17
   :root{ --wrap:100% }
 }
 @media (max-width:1100px){
+  .grid3{ grid-template-columns:repeat(2, minmax(0,1fr)) }
   .head-in{ flex-wrap:wrap } .in.f.row, .fanrow, [class^="ly"]{ flex-wrap:wrap } .fanrow > *{ max-width:100% } .head-side{ margin-left:0; width:100% }
   .tiles, .row24, .ways, .scards .srow, .people-block .split, .studio, .visit, .person, .woven .text, .steps4 .list{ flex-wrap:wrap }
   .tiles > *, .ways > *, .scards .srow > *{ flex:1 1 calc(50% - 12px) }
@@ -533,6 +541,7 @@ html[data-colour="cb"] [data-hue="futures"]{ --pat:radial-gradient(rgba(17,17,17
   .mrow h3{ width:auto; flex:1 1 0 }
 }
 @media (max-width:720px){
+  .pn{ gap:16px; align-items:flex-start } .pn a{ min-width:0; flex:1 1 0 } .pn a.next{ justify-content:flex-end } .pn b{ overflow-wrap:anywhere }
   :root{ --gutter:20px }
   .top .bar{ left:20px; transform:none; gap:16px; padding:5px 14px } .top nav{ display:none } .sintro{ flex-wrap:wrap }
   .head-in{ padding:56px 0 64px } .h-title.big{ font-size:3rem } .h-state{ font-size:2.25rem } .h-state.big{ font-size:2rem }
@@ -541,7 +550,7 @@ html[data-colour="cb"] [data-hue="futures"]{ --pat:radial-gradient(rgba(17,17,17
   .tiles > *, .ways > *, .scards .srow > *{ flex:1 1 100% }
   .wrow{ flex-wrap:wrap; gap:8px } .wrow-tags, .wrow-meta, .wrow .who{ width:100%; text-align:left; justify-content:flex-start } .wrow h3{ flex-basis:100% }
   .talk{ flex-wrap:wrap; padding:24px } .menu, .acc{ right:10px; left:10px; width:auto; top:66px } .menu-main a .t{ font-size:2rem }
-  .grid-people{ grid-template-columns:1fr } .person h1{ font-size:3rem } .pull-in{ padding:56px 24px } .pull-in p{ font-size:2rem }
+  .grid-people{ grid-template-columns:1fr } .person h1{ font-size:3rem } .grid3{ grid-template-columns:1fr } .filters{ margin-left:0 } .pull-in{ padding:56px 24px } .pull-in p{ font-size:2rem }
   .foot-cols{ grid-template-columns:1fr } .proto .homes{ display:none }
   .foot-form{ flex-wrap:wrap; width:100% } .foot-form input{ width:100% }
   .fanbox{ width:100%!important; height:auto!important; aspect-ratio:624/520 } .fanbox img{ left:calc(var(--x) * 1%)!important; top:calc(var(--y) * 1%)!important; width:42%!important; height:auto!important; aspect-ratio:260/340 }
@@ -557,6 +566,7 @@ html[data-colour="cb"] [data-hue="futures"]{ --pat:radial-gradient(rgba(17,17,17
   .head-side{ padding-bottom:0 }
 }
 @media print{ .top, footer.site, .proto, .toast, .menu, .acc, .scrim, .peek{ display:none!important } body{ background:#fff } }
+.row24.even .ptile .ptile-img{ aspect-ratio:var(--ar)!important }
 
 /* text styles used by loose text on the pages (generated) */
 .ts1{font-size:2.5000rem;font-weight:500;line-height:1.1500;letter-spacing:-0.0200em}
