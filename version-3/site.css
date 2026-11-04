@@ -288,6 +288,7 @@ a.card:hover{ background:rgba(250,249,246,.95) }
 .story p{ font-size:1.25rem; line-height:calc(1.5 * var(--lh)) }
 .picture{ padding:0 var(--gutter); display:flex; flex-direction:column; gap:12px } .picture img{ width:min(var(--wrap), 100%); margin-inline:auto; height:640px; object-fit:cover }
 .picture figcaption{ font-size:.9375rem; color:var(--grey); width:min(var(--wrap), 100%); margin-inline:auto }
+.pair{ padding:0 var(--gutter); display:flex; gap:24px; width:100%; max-width:calc(var(--wrap) + 2 * var(--gutter)); margin-inline:auto } .pair figure{ flex:1 1 0; min-width:0; margin:0; display:flex; flex-direction:column; gap:12px } .pair img{ display:block; width:100%; height:auto; object-fit:cover } .pair figcaption{ font-size:.9375rem; line-height:1.45; color:var(--grey) }
 /* steps */
 .steps4{ display:flex; flex-direction:column; gap:24px }
 .steps4 .track{ position:relative; height:14px }
@@ -541,6 +542,7 @@ html[data-colour="cb"] [data-hue="futures"]{ --pat:radial-gradient(rgba(17,17,17
   .mrow h3{ width:auto; flex:1 1 0 }
 }
 @media (max-width:720px){
+  .pair{ flex-direction:column }
   .pn{ gap:16px; align-items:flex-start } .pn a{ min-width:0; flex:1 1 0 } .pn a.next{ justify-content:flex-end } .pn b{ overflow-wrap:anywhere }
   :root{ --gutter:20px }
   .top .bar{ left:20px; transform:none; gap:16px; padding:5px 14px } .top nav{ display:none } .sintro{ flex-wrap:wrap }
